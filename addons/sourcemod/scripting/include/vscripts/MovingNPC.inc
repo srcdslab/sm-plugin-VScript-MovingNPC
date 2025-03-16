@@ -6,6 +6,7 @@
 #include <vscripts>
 #include <float>
 
+#if SOURCEMOD_V_MAJOR >= 1 && SOURCEMOD_V_MINOR < 13
 stock float FloatMod(float num, float denom)
 {
     return num - denom * RoundToFloor(num / denom);
@@ -15,6 +16,7 @@ stock float operator%(float oper1, float oper2)
 {
     return FloatMod(oper1, oper2);
 }
+#endif
 
 public bool IsValidPlayer(int player)
 {
