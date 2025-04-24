@@ -420,7 +420,9 @@ public void OnEntityDestroyed(int entity)
 
 public void OnMapEnd()
 {
-	UnhookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
+	if (g_bConfigLoaded)
+		UnhookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
+
 	if(g_aMovingNpc)
 	{
 		for (int i = 0; i < g_aMovingNpc.Length; ++i)
