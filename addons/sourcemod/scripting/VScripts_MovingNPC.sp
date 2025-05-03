@@ -5,6 +5,7 @@
 
 #pragma newdecls required
 
+bool g_bConfigLoaded = false;
 ArrayList g_aMovingNpc = null;
 ArrayList g_aNpcConfigNT = null;
 StringMap g_mNpcConfig = null;
@@ -14,7 +15,7 @@ public Plugin myinfo =
 	name = "MovingNPC vscripts",
 	author = "Cloud Strife",
 	description = "MovingNPC vscripts",
-	version = "1.0b",
+	version = "1.0c",
 	url = "https://steamcommunity.com/id/cloudstrifeua/"
 };
 
@@ -230,32 +231,26 @@ stock bool MatchTrigger(int entity, const char[] sTrigger, bool namefixup = fals
 
 public void OnMapStart()
 {
+	g_bConfigLoaded = false;
 	char sConfigPath[PLATFORM_MAX_PATH];
 	char sCurMap[PLATFORM_MAX_PATH];
 	GetCurrentMap(sCurMap, sizeof(sCurMap));
 	BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), "configs/movingnpc/%s.cfg", sCurMap);
 	if(!FileExists(sConfigPath))
-	{
-		GetPluginFilename(INVALID_HANDLE, sCurMap, sizeof(sCurMap));
-		ServerCommand("sm plugins unload %s", sCurMap);
 		return;
-	}
 	KeyValues Config = new KeyValues("npc");
 	if(!Config.ImportFromFile(sConfigPath))
 	{
 		LogMessage("ImportFromFile() failed for map %s!", sCurMap);
-		GetPluginFilename(INVALID_HANDLE, sCurMap, sizeof(sCurMap));
-		ServerCommand("sm plugins unload %s", sCurMap);
 		return;
 	}
 	Config.Rewind();
 	if(!Config.GotoFirstSubKey(true))
 	{
 		LogMessage("The current map does not have any moving npcs configured.");
-		GetPluginFilename(INVALID_HANDLE, sCurMap, sizeof(sCurMap));
-		ServerCommand("sm plugins unload %s", sCurMap);
 		return;
 	}
+	g_bConfigLoaded = true;
 	g_mNpcConfig = new StringMap();
 	g_aNpcConfigNT = new ArrayList();
 	do
@@ -319,6 +314,9 @@ public void OnMapStart()
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
+	if (!g_bConfigLoaded)
+		return;
+
 	for(int i = 0; i < g_aNpcConfigNT.Length; ++i)
 	{
 		MovingNpcConfig NpcConf = g_aNpcConfigNT.Get(i);
@@ -422,7 +420,9 @@ public void OnEntityDestroyed(int entity)
 
 public void OnMapEnd()
 {
-	UnhookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
+	if (g_bConfigLoaded)
+		UnhookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
+
 	if(g_aMovingNpc)
 	{
 		for (int i = 0; i < g_aMovingNpc.Length; ++i)
