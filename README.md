@@ -1,3 +1,6 @@
+## This plugin was archived in favor of native VScript introduced in CS:S on 18 feb 2025.
+**For examples of Moving NPCs VScripts visit [NiDE.gg ZE-Configs](https://github.com/NiDE-gg/ZE-Configs/tree/master/cstrike/scripts/vscripts)**
+
 # sm-plugin-VScript-MovingNPC
 
 Enhance your NPCs with precise control using an easy-to-configure file.
@@ -12,6 +15,3 @@ This plugin allows for the sophisticated manipulation of NPC movements and behav
 - For more examples, visit: [Additional Configs](https://github.com/NiDE-gg/ZE-Configs/tree/master/cstrike/addons/sourcemod/configs/movingnpc)
 
 For more detailed configurations and options, refer to the examples provided in the links above.
-
-## Contributing
-We welcome contributions! If you have suggestions or improvements, feel free to open an issue or submit a pull request.
